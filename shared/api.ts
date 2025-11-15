@@ -415,4 +415,49 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
 </html>`,
     icon: "🙏",
   },
+  {
+    id: "newsletter",
+    name: "Newsletter",
+    category: "Marketing",
+    subject: "Your Monthly Newsletter - [Month] Edition",
+    preview: "Check out the latest updates, news, and insights from this month...",
+    content: `<html>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+  <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+    <h2 style="color: #2c3e50; margin-bottom: 20px;">📰 Monthly Newsletter</h2>
+    <p>Hi [Subscriber Name],</p>
+    <p>Welcome to our [Month] newsletter! This month, we're sharing exciting updates, valuable insights, and exclusive content just for our subscribers.</p>
+
+    <div style="background-color: #f8f9fa; padding: 15px; border-left: 4px solid #3498db; margin: 20px 0;">
+      <h3 style="margin-top: 0; color: #2c3e50;">📌 Featured Article</h3>
+      <p><strong>[Article Title]</strong></p>
+      <p>[Article summary goes here...]</p>
+      <a href="[article_link]" style="color: #3498db; text-decoration: none; font-weight: bold;">Read More →</a>
+    </div>
+
+    <div style="background-color: #f0fdfb; padding: 15px; border-left: 4px solid #16a085; margin: 20px 0;">
+      <h3 style="margin-top: 0; color: #2c3e50;">💡 This Month's Tips</h3>
+      <ul style="padding-left: 20px;">
+        <li>[Tip 1: Brief description]</li>
+        <li>[Tip 2: Brief description]</li>
+        <li>[Tip 3: Brief description]</li>
+      </ul>
+    </div>
+
+    <div style="background-color: #fff5f0; padding: 15px; border-left: 4px solid #e67e22; margin: 20px 0;">
+      <h3 style="margin-top: 0; color: #2c3e50;">🌟 Community Spotlight</h3>
+      <p>[Feature a community member or success story here...]</p>
+    </div>
+
+    <div style="background-color: #ecf0f1; padding: 15px; border-radius: 4px; margin: 20px 0; text-align: center;">
+      <a href="[view_online_link]" style="display: inline-block; background-color: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">View in Browser</a>
+    </div>
+
+    <p style="color: #7f8c8d; font-size: 12px;">You're receiving this because you subscribed to our newsletter. <a href="[unsubscribe_link]" style="color: #7f8c8d;">Unsubscribe</a></p>
+    <p>Best regards,<br>The Team</p>
+  </div>
+</body>
+</html>`,
+    icon: "📰",
+  },
 ];
