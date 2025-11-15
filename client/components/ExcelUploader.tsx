@@ -40,7 +40,7 @@ export default function ExcelUploader({
 
           if (parsed.length === 0) {
             throw new Error(
-              'No valid rows found. Make sure your CSV has "Name" and "Email" columns.'
+              'No valid rows found. Make sure your CSV has "Name" and "Email" columns.',
             );
           }
 
@@ -55,9 +55,7 @@ export default function ExcelUploader({
           toast({
             title: "Error",
             description:
-              error instanceof Error
-                ? error.message
-                : "Failed to parse CSV",
+              error instanceof Error ? error.message : "Failed to parse CSV",
             variant: "destructive",
           });
         }
@@ -95,7 +93,7 @@ export default function ExcelUploader({
 
         if (parsed.length === 0) {
           throw new Error(
-            'No valid rows found. Make sure your Excel has "Name" and "Email" columns.'
+            'No valid rows found. Make sure your Excel has "Name" and "Email" columns.',
           );
         }
 
@@ -110,9 +108,7 @@ export default function ExcelUploader({
         toast({
           title: "Error",
           description:
-            error instanceof Error
-              ? error.message
-              : "Failed to parse Excel",
+            error instanceof Error ? error.message : "Failed to parse Excel",
           variant: "destructive",
         });
       }
@@ -160,9 +156,7 @@ export default function ExcelUploader({
       <Card className="w-full max-w-md p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-900">
-            Upload Recipients
-          </h2>
+          <h2 className="text-xl font-bold text-gray-900">Upload Recipients</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600"
@@ -217,7 +211,8 @@ export default function ExcelUploader({
                     {fileName}
                   </p>
                   <p className="text-xs text-green-800">
-                    {recipients.length} recipient{recipients.length !== 1 ? "s" : ""} loaded
+                    {recipients.length} recipient
+                    {recipients.length !== 1 ? "s" : ""} loaded
                   </p>
                 </div>
               </div>
@@ -260,11 +255,7 @@ export default function ExcelUploader({
 
           {/* Buttons */}
           <div className="flex gap-3">
-            <Button
-              variant="outline"
-              onClick={onClose}
-              className="flex-1 h-10"
-            >
+            <Button variant="outline" onClick={onClose} className="flex-1 h-10">
               Cancel
             </Button>
             <Button

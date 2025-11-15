@@ -22,10 +22,16 @@ export const handleBulkSendEmail: RequestHandler = async (req, res) => {
       return;
     }
 
-    if (!payload.subject || !payload.content || !payload.gmailEmail || !payload.appPassword) {
+    if (
+      !payload.subject ||
+      !payload.content ||
+      !payload.gmailEmail ||
+      !payload.appPassword
+    ) {
       res.status(400).json({
         success: false,
-        message: "Missing required fields: subject, content, gmailEmail, appPassword",
+        message:
+          "Missing required fields: subject, content, gmailEmail, appPassword",
         totalSent: 0,
         totalFailed: 0,
         results: [],

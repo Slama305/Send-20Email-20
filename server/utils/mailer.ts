@@ -34,7 +34,7 @@ function createTransporter() {
 
   // Use Ethereal Email (free testing service) if no SMTP config provided
   console.warn(
-    "No SMTP credentials found. Using Ethereal Email for testing. To use real email, set SMTP_HOST, SMTP_PORT, SMTP_USER, and SMTP_PASSWORD."
+    "No SMTP credentials found. Using Ethereal Email for testing. To use real email, set SMTP_HOST, SMTP_PORT, SMTP_USER, and SMTP_PASSWORD.",
   );
 
   return nodemailer.createTestAccount().then((testAccount) => {
@@ -51,7 +51,7 @@ function createTransporter() {
 }
 
 export async function sendEmailWithNodemailer(
-  options: SendEmailOptions
+  options: SendEmailOptions,
 ): Promise<SendEmailResult> {
   try {
     const transporter = await createTransporter();
@@ -74,10 +74,7 @@ export async function sendEmailWithNodemailer(
       process.env.NODE_ENV !== "production" &&
       info.response.includes("250 Message accepted")
     ) {
-      console.log(
-        "Ethereal preview URL:",
-        nodemailer.getTestMessageUrl(info)
-      );
+      console.log("Ethereal preview URL:", nodemailer.getTestMessageUrl(info));
     }
 
     return {

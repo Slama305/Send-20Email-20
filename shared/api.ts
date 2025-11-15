@@ -57,7 +57,8 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     name: "Event Invitation",
     category: "Events",
     subject: "You're Invited! Join us for an Amazing Event",
-    preview: "We'd love to have you at our upcoming event. Join us for a memorable experience...",
+    preview:
+      "We'd love to have you at our upcoming event. Join us for a memorable experience...",
     content: `<html>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
@@ -81,7 +82,8 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     name: "Application Acceptance",
     category: "HR",
     subject: "Congratulations! Your Application Has Been Accepted",
-    preview: "Great news! We're excited to offer you the position. Here's what's next...",
+    preview:
+      "Great news! We're excited to offer you the position. Here's what's next...",
     content: `<html>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
@@ -104,7 +106,8 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     name: "Application Rejection",
     category: "HR",
     subject: "Thank You For Your Application",
-    preview: "We appreciate your interest. While we won't be moving forward at this time...",
+    preview:
+      "We appreciate your interest. While we won't be moving forward at this time...",
     content: `<html>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
@@ -128,7 +131,8 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     name: "Contest Winner Notification",
     category: "Marketing",
     subject: "🏆 You've Won! Claim Your Prize Today",
-    preview: "Congratulations! You've been selected as the winner of our contest...",
+    preview:
+      "Congratulations! You've been selected as the winner of our contest...",
     content: `<html>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
@@ -157,7 +161,8 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     name: "Security Alert",
     category: "Security",
     subject: "⚠️ Security Alert - Unusual Activity Detected",
-    preview: "We've detected unusual activity on your account. Please review this immediately...",
+    preview:
+      "We've detected unusual activity on your account. Please review this immediately...",
     content: `<html>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
@@ -190,7 +195,8 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     name: "Welcome Email",
     category: "Onboarding",
     subject: "Welcome to Our Platform!",
-    preview: "We're excited to have you join our community. Here's how to get started...",
+    preview:
+      "We're excited to have you join our community. Here's how to get started...",
     content: `<html>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
@@ -217,7 +223,8 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     name: "Event Reminder",
     category: "Events",
     subject: "Don't Forget! Your Event Starts Tomorrow",
-    preview: "Just a friendly reminder about the upcoming event. Here are the details...",
+    preview:
+      "Just a friendly reminder about the upcoming event. Here are the details...",
     content: `<html>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
@@ -244,7 +251,8 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     name: "Feedback Request",
     category: "Survey",
     subject: "We'd Love Your Feedback",
-    preview: "Your opinion matters! Help us improve by sharing your thoughts...",
+    preview:
+      "Your opinion matters! Help us improve by sharing your thoughts...",
     content: `<html>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
@@ -268,7 +276,8 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     name: "Order Receipt",
     category: "Orders",
     subject: "Order Confirmation #[Order ID]",
-    preview: "Thank you for your purchase! Here's your order confirmation and receipt...",
+    preview:
+      "Thank you for your purchase! Here's your order confirmation and receipt...",
     content: `<html>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
@@ -298,7 +307,8 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     name: "Password Reset",
     category: "Security",
     subject: "Reset Your Password",
-    preview: "We received a request to reset your password. Click the link below to set a new one...",
+    preview:
+      "We received a request to reset your password. Click the link below to set a new one...",
     content: `<html>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
@@ -322,7 +332,8 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     name: "General Notification",
     category: "Updates",
     subject: "Important Update From Us",
-    preview: "We have an important update to share with you. Please read below...",
+    preview:
+      "We have an important update to share with you. Please read below...",
     content: `<html>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
@@ -348,7 +359,8 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     name: "Invoice",
     category: "Finance",
     subject: "Invoice #[Invoice ID] From [Company Name]",
-    preview: "Your invoice is ready. Please find the details and payment options below...",
+    preview:
+      "Your invoice is ready. Please find the details and payment options below...",
     content: `<html>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
@@ -393,7 +405,8 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     name: "Birthday Greeting",
     category: "Personal",
     subject: "🎉 Happy Birthday [Name]!",
-    preview: "Wishing you a wonderful birthday filled with joy and celebration...",
+    preview:
+      "Wishing you a wonderful birthday filled with joy and celebration...",
     content: `<html>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
@@ -414,7 +427,8 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     name: "Apology/Service Recovery",
     category: "Support",
     subject: "We Apologize - Here's How We're Making It Right",
-    preview: "We sincerely apologize for the inconvenience. Here's what we're doing to fix it...",
+    preview:
+      "We sincerely apologize for the inconvenience. Here's what we're doing to fix it...",
     content: `<html>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
@@ -445,7 +459,8 @@ export const EMAIL_TEMPLATES: EmailTemplate[] = [
     name: "Newsletter",
     category: "Marketing",
     subject: "Your Monthly Newsletter - [Month] Edition",
-    preview: "Check out the latest updates, news, and insights from this month...",
+    preview:
+      "Check out the latest updates, news, and insights from this month...",
     content: `<html>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">

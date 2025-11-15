@@ -9,6 +9,7 @@ A complete, production-ready full-stack email template management application bu
 ### Frontend Features
 
 #### 1. Template Selection Interface
+
 - **15 Professional Email Templates** organized into 10 categories:
   - Events (2 templates): Invitation, Reminder
   - HR (2 templates): Acceptance, Rejection
@@ -22,6 +23,7 @@ A complete, production-ready full-stack email template management application bu
   - Updates (1 template): Notification
 
 #### 2. Template Cards with Visual Polish
+
 - Card-based layout with emoji icons
 - Hover effects with shadow and color transitions
 - Category badges and preview text
@@ -29,17 +31,20 @@ A complete, production-ready full-stack email template management application bu
 - Responsive grid layout
 
 #### 3. Search & Filter System
+
 - Real-time search across template names and descriptions
 - Category-based filtering (All, Events, Finance, HR, etc.)
 - Dynamic template count display
 - Live preview updates when switching templates
 
 #### 4. Email Preview System
+
 - Embedded iframe displaying full HTML email content
 - Real-time preview updates as content is edited
 - Professional rendering of email styles
 
 #### 5. Email Editor
+
 - Recipient name and email input fields
 - Subject line customization
 - HTML editor toggle for advanced customization
@@ -47,6 +52,7 @@ A complete, production-ready full-stack email template management application bu
 - "Edit HTML" button for raw HTML editing
 
 #### 6. Send Functionality
+
 - Send Email button with loading state
 - Animated spinner during email transmission
 - Toast notifications for success/error feedback
@@ -55,18 +61,21 @@ A complete, production-ready full-stack email template management application bu
 ### Backend Features
 
 #### 1. Express Server Setup
+
 - Single integrated dev server on port 8080
 - Both frontend and backend hot reload
 - CORS enabled for development
 - JSON request/response handling
 
 #### 2. Email Sending Endpoint
+
 - POST /api/send-email endpoint
 - Request validation (email format, required fields)
 - Nodemailer integration for email transmission
 - Error handling and user feedback
 
 #### 3. Email Service (Nodemailer)
+
 - **Dual Mode Support:**
   - Development: Ethereal Email for free testing (no setup required)
   - Production: Real SMTP integration with environment variables
@@ -78,6 +87,7 @@ A complete, production-ready full-stack email template management application bu
 - Graceful fallback to test email service
 
 #### 4. API Response Handling
+
 - Structured error messages
 - MessageID tracking
 - Success confirmation
@@ -85,12 +95,14 @@ A complete, production-ready full-stack email template management application bu
 ### Design & UX
 
 #### 1. Responsive Layout
+
 - **Desktop (lg breakpoint)**: 4-column grid with sidebar + preview + editor
 - **Tablet (md breakpoint)**: 2-column layout
 - **Mobile**: Single column vertical stacking
 - Tested and verified on multiple screen sizes
 
 #### 2. Professional Styling
+
 - Modern gradient backgrounds
 - Clean white cards with subtle shadows
 - Blue accent colors (primary: #2563eb)
@@ -99,6 +111,7 @@ A complete, production-ready full-stack email template management application bu
 - Proper contrast ratios for readability
 
 #### 3. User Experience
+
 - Intuitive navigation and layout
 - Clear visual hierarchy
 - Loading states with spinner
@@ -156,6 +169,7 @@ root/
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **React 18**: Modern UI library with hooks
 - **TypeScript**: Type-safe development
 - **Tailwind CSS 3**: Utility-first styling
@@ -165,11 +179,13 @@ root/
 - **Sonner & Radix Toast**: Notification system
 
 ### Backend
+
 - **Express 5**: Lightweight web server
 - **Nodemailer**: Email sending library
 - **Node.js**: JavaScript runtime
 
 ### Build & Development
+
 - **PNPM**: Fast package manager
 - **Vitest**: Unit testing framework
 - **TypeScript**: Type checking
@@ -233,6 +249,7 @@ FROM_NAME=Your Company
 15. **Newsletter** - Send monthly updates
 
 All templates feature:
+
 - Professional HTML/CSS styling
 - Customizable placeholders
 - Color-coded sections
@@ -260,6 +277,7 @@ All templates feature:
 ## 🎨 Customization
 
 ### Add New Templates
+
 Edit `shared/api.ts` and add to `EMAIL_TEMPLATES` array:
 
 ```typescript
@@ -275,19 +293,23 @@ Edit `shared/api.ts` and add to `EMAIL_TEMPLATES` array:
 ```
 
 ### Modify Styling
+
 - **Global colors**: `client/global.css` (CSS variables)
 - **Tailwind theme**: `tailwind.config.ts`
 - **Component styles**: Individual component files
 
 ### Change Email Provider
+
 Edit `server/utils/mailer.ts` to use different SMTP providers
 
 ## 📝 API Documentation
 
 ### POST /api/send-email
+
 Send a templated email
 
 **Request:**
+
 ```json
 {
   "recipientEmail": "user@example.com",
@@ -299,6 +321,7 @@ Send a templated email
 ```
 
 **Response (Success):**
+
 ```json
 {
   "success": true,
@@ -308,6 +331,7 @@ Send a templated email
 ```
 
 **Response (Error):**
+
 ```json
 {
   "success": false,
@@ -327,11 +351,13 @@ Send a templated email
 ## 🧪 Testing
 
 Unit tests can be run with:
+
 ```bash
 pnpm test
 ```
 
 Tests include type checking via:
+
 ```bash
 pnpm typecheck
 ```
@@ -339,18 +365,21 @@ pnpm typecheck
 ## 🌐 Deployment
 
 ### Netlify
+
 ```bash
 pnpm build
 # Deploy dist/spa/ folder
 ```
 
 ### Vercel
+
 ```bash
 pnpm build
 # Deploy dist/spa/ folder
 ```
 
 ### Docker
+
 ```dockerfile
 FROM node:18-alpine
 WORKDIR /app
@@ -384,6 +413,7 @@ CMD ["pnpm", "start"]
 ## 🎯 Conclusion
 
 This project delivers a complete, production-ready email template management system that is:
+
 - **User-friendly**: Intuitive interface for template selection and customization
 - **Developer-friendly**: Clean code, TypeScript, well-organized structure
 - **Production-ready**: Error handling, security, performance optimized

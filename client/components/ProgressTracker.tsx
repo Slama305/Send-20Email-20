@@ -34,7 +34,9 @@ export default function ProgressTracker({
       <div className="grid grid-cols-3 gap-4 mb-6">
         <div className="bg-green-50 p-4 rounded-lg border border-green-200">
           <p className="text-xs text-green-700 font-medium">Sent</p>
-          <p className="text-2xl font-bold text-green-900 mt-1">{successCount}</p>
+          <p className="text-2xl font-bold text-green-900 mt-1">
+            {successCount}
+          </p>
         </div>
         <div className="bg-red-50 p-4 rounded-lg border border-red-200">
           <p className="text-xs text-red-700 font-medium">Failed</p>
@@ -42,7 +44,9 @@ export default function ProgressTracker({
         </div>
         <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
           <p className="text-xs text-gray-700 font-medium">Pending</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{pendingCount}</p>
+          <p className="text-2xl font-bold text-gray-900 mt-1">
+            {pendingCount}
+          </p>
         </div>
       </div>
 
@@ -106,7 +110,8 @@ export default function ProgressTracker({
               <Clock className="w-5 h-5 text-blue-600" />
             </div>
             <p className="text-sm mt-2">
-              Sending {pendingCount} more email{pendingCount !== 1 ? "s" : ""}...
+              Sending {pendingCount} more email{pendingCount !== 1 ? "s" : ""}
+              ...
             </p>
           </div>
         )}

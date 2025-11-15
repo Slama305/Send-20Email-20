@@ -5,6 +5,7 @@ A modern, full-stack email template management application built with React, Tai
 ## Features
 
 ✨ **15 Predefined Email Templates**
+
 - Event Invitation
 - Application Acceptance & Rejection
 - Contest Winner Notification
@@ -18,6 +19,7 @@ A modern, full-stack email template management application built with React, Tai
 - Service Recovery Apologies
 
 🎨 **Beautiful UI**
+
 - Fully responsive design (mobile, tablet, desktop)
 - Template cards with hover effects and shadows
 - Live preview of email templates
@@ -25,12 +27,14 @@ A modern, full-stack email template management application built with React, Tai
 - Search and filter functionality
 
 ✏️ **Email Customization**
+
 - Edit email subject and content
 - HTML editor for advanced customization
 - Real-time preview of changes
 - Store recipient details (name and email)
 
 📧 **Email Sending**
+
 - POST endpoint for sending emails
 - Nodemailer integration (with Ethereal Email testing support)
 - Configurable SMTP settings
@@ -112,14 +116,17 @@ FROM_NAME=Your Company Name
 #### Popular SMTP Providers
 
 **Gmail:**
+
 ```
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_SECURE=false
 ```
+
 (Use App Password, not your regular password)
 
 **SendGrid:**
+
 ```
 SMTP_HOST=smtp.sendgrid.net
 SMTP_PORT=587
@@ -129,6 +136,7 @@ SMTP_PASSWORD=your-sendgrid-api-key
 ```
 
 **Mailgun:**
+
 ```
 SMTP_HOST=smtp.mailgun.org
 SMTP_PORT=587
@@ -140,17 +148,21 @@ SMTP_PASSWORD=your-mailgun-password
 ## API Endpoints
 
 ### GET /api/ping
+
 Simple health check endpoint.
 
 **Response:**
+
 ```json
 { "message": "ping" }
 ```
 
 ### POST /api/send-email
+
 Send a templated email.
 
 **Request Body:**
+
 ```json
 {
   "recipientEmail": "john@example.com",
@@ -162,6 +174,7 @@ Send a templated email.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,

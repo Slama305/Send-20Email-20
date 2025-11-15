@@ -13,7 +13,7 @@ export default function Index() {
   const { toast } = useToast();
 
   const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate>(
-    EMAIL_TEMPLATES[0]
+    EMAIL_TEMPLATES[0],
   );
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -53,7 +53,7 @@ export default function Index() {
 
   const handleSendEmail = async (
     recipientEmail: string,
-    recipientName: string
+    recipientName: string,
   ) => {
     setIsSending(true);
     try {
@@ -225,7 +225,9 @@ export default function Index() {
       {/* Footer */}
       <footer className="bg-white border-t border-slate-200 mt-12">
         <div className="max-w-7xl mx-auto px-6 py-8 text-center text-slate-600 text-sm">
-          <p>Professional Email Template Manager • Powered by React & Tailwind</p>
+          <p>
+            Professional Email Template Manager • Powered by React & Tailwind
+          </p>
         </div>
       </footer>
     </div>

@@ -43,7 +43,7 @@ export default function Login() {
       // Store credentials in session storage (not persistent)
       sessionStorage.setItem(
         "gmailCredentials",
-        JSON.stringify({ email, password })
+        JSON.stringify({ email, password }),
       );
 
       toast({
@@ -84,7 +84,8 @@ export default function Login() {
             <div className="text-sm text-blue-900">
               <p className="font-semibold mb-1">Gmail App Password Required</p>
               <p className="text-xs">
-                Use your 16-character Gmail App Password, not your regular password. Learn how to create one:{" "}
+                Use your 16-character Gmail App Password, not your regular
+                password. Learn how to create one:{" "}
                 <a
                   href="https://support.google.com/accounts/answer/185833"
                   target="_blank"
@@ -179,10 +180,10 @@ export default function Login() {
             ℹ️ Need help?
           </p>
           <ul className="text-xs text-gray-600 space-y-1">
+            <li>• Your email should be a Gmail account (example@gmail.com)</li>
             <li>
-              • Your email should be a Gmail account (example@gmail.com)
+              • Generate an App Password from your Google Account settings
             </li>
-            <li>• Generate an App Password from your Google Account settings</li>
             <li>• The 16-character password replaces your regular password</li>
             <li>• Your credentials are kept in browser session only</li>
           </ul>
