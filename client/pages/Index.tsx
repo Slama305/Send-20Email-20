@@ -1,11 +1,17 @@
-import { useState, useMemo } from "react";
-import { EMAIL_TEMPLATES, EmailTemplate, SendEmailRequest } from "@shared/api";
+import { useState, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { EMAIL_TEMPLATES, EmailTemplate, BulkEmailRequest } from "@shared/api";
 import TemplateCard from "@/components/TemplateCard";
 import TemplatePreview from "@/components/TemplatePreview";
 import EmailEditor from "@/components/EmailEditor";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
 
 export default function Index() {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate>(
     EMAIL_TEMPLATES[0]
   );
@@ -14,7 +20,14 @@ export default function Index() {
   const [isSending, setIsSending] = useState(false);
   const [editedSubject, setEditedSubject] = useState(selectedTemplate.subject);
   const [editedContent, setEditedContent] = useState(selectedTemplate.content);
-  const { toast } = useToast();
+
+  // Check authentication
+  useEffect(() => {
+    const credentials = sessionStorage.getItem("gmailCredentials");
+    if (!credentials) {
+      navigate("/");
+    }
+  }, [navigate]);
 
   const categories = useMemo(() => {
     const cats = new Set(EMAIL_TEMPLATES.map((t) => t.category));
@@ -44,15 +57,24 @@ export default function Index() {
   ) => {
     setIsSending(true);
     try {
-      const payload: SendEmailRequest = {
-        recipientEmail,
-        recipientName,
+      const credentialsStr = sessionStorage.getItem("gmailCredentials");
+      if (!credentialsStr) {
+        throw new Error("Credentials not found");
+      }
+
+      const credentials = JSON.parse(credentialsStr);
+
+      // Send to single recipient using bulk endpoint
+      const payload: BulkEmailRequest = {
+        recipients: [{ name: recipientName, email: recipientEmail }],
         subject: editedSubject,
         content: editedContent,
         templateId: selectedTemplate.id,
+        gmailEmail: credentials.email,
+        appPassword: credentials.password,
       };
 
-      const response = await fetch("/api/send-email", {
+      const response = await fetch("/api/bulk-send-email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,13 +88,14 @@ export default function Index() {
         throw new Error(data.message || "Failed to send email");
       }
 
-      toast({
-        title: "Success",
-        description: "Email sent successfully!",
-      });
-
-      setEditedSubject(selectedTemplate.subject);
-      setEditedContent(selectedTemplate.content);
+      if (data.totalSent > 0) {
+        toast({
+          title: "Success",
+          description: "Email sent successfully!",
+        });
+      } else {
+        throw new Error(data.results[0]?.error || "Failed to send email");
+      }
     } catch (error) {
       console.error("Error sending email:", error);
       toast({
@@ -84,6 +107,15 @@ export default function Index() {
     } finally {
       setIsSending(false);
     }
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("gmailCredentials");
+    navigate("/");
+    toast({
+      title: "Logged out",
+      description: "You have been logged out successfully",
+    });
   };
 
   return (
