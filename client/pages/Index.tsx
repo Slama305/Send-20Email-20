@@ -99,6 +99,7 @@ export default function Index() {
     } catch (error) {
       console.error("Error sending email:", error);
       toast({
+        
         title: "Error",
         description:
           error instanceof Error ? error.message : "Failed to send email",
