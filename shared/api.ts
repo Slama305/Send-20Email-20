@@ -26,6 +26,31 @@ export interface SendEmailResponse {
   messageId?: string;
 }
 
+export interface BulkEmailRequest {
+  recipients: Array<{
+    name: string;
+    email: string;
+  }>;
+  subject: string;
+  content: string;
+  templateId: string;
+  gmailEmail: string;
+  appPassword: string;
+}
+
+export interface BulkEmailResponse {
+  success: boolean;
+  message: string;
+  totalSent: number;
+  totalFailed: number;
+  results: Array<{
+    email: string;
+    name: string;
+    success: boolean;
+    error?: string;
+  }>;
+}
+
 export const EMAIL_TEMPLATES: EmailTemplate[] = [
   {
     id: "invitation",
