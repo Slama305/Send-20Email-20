@@ -19,10 +19,13 @@ export default function ProgressTracker({
   totalToSend,
   isComplete,
 }: ProgressTrackerProps) {
+  const safeTotal = Math.max(totalToSend, 1);
+
   const successCount = results.filter((r) => r.success).length;
   const failureCount = results.filter((r) => !r.success).length;
-  const pendingCount = totalToSend - results.length;
-  const progressPercent = (results.length / totalToSend) * 100;
+  const pendingCount = Math.max(totalToSend - results.length, 0);
+
+  const progressPercent = Math.min((results.length / safeTotal) * 100, 100);
 
   return (
     <Card className="p-6">
@@ -38,10 +41,14 @@ export default function ProgressTracker({
             {successCount}
           </p>
         </div>
+
         <div className="bg-red-50 p-4 rounded-lg border border-red-200">
           <p className="text-xs text-red-700 font-medium">Failed</p>
-          <p className="text-2xl font-bold text-red-900 mt-1">{failureCount}</p>
+          <p className="text-2xl font-bold text-red-900 mt-1">
+            {failureCount}
+          </p>
         </div>
+
         <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
           <p className="text-xs text-gray-700 font-medium">Pending</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">
@@ -60,6 +67,7 @@ export default function ProgressTracker({
             {Math.round(progressPercent)}%
           </span>
         </div>
+
         <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
           <div
             className="bg-blue-600 h-full transition-all duration-300"
@@ -76,8 +84,8 @@ export default function ProgressTracker({
           </p>
         )}
 
-        {results.map((result, index) => (
-          <div key={index} className="flex gap-3 p-3 bg-gray-50 rounded-lg">
+        {results.map((result) => (
+          <div key={result.email} className="flex gap-3 p-3 bg-gray-50 rounded-lg">
             <div className="flex-shrink-0 mt-0.5">
               {result.success ? (
                 <CheckCircle className="w-5 h-5 text-green-600" />
@@ -85,19 +93,25 @@ export default function ProgressTracker({
                 <AlertCircle className="w-5 h-5 text-red-600" />
               )}
             </div>
+
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-900">{result.name}</p>
               <p className="text-xs text-gray-500 truncate">{result.email}</p>
+
               {result.error && (
                 <p className="text-xs text-red-600 mt-1">{result.error}</p>
               )}
             </div>
+
             <div className="flex-shrink-0">
               {!result.success && !isComplete && (
                 <Clock className="w-4 h-4 text-gray-400 animate-spin" />
               )}
+
               {result.success && (
-                <span className="text-xs font-medium text-green-700">Sent</span>
+                <span className="text-xs font-medium text-green-700">
+                  Sent
+                </span>
               )}
             </div>
           </div>
@@ -110,8 +124,8 @@ export default function ProgressTracker({
               <Clock className="w-5 h-5 text-blue-600" />
             </div>
             <p className="text-sm mt-2">
-              Sending {pendingCount} more email{pendingCount !== 1 ? "s" : ""}
-              ...
+              Sending {pendingCount} more email
+              {pendingCount !== 1 ? "s" : ""}...
             </p>
           </div>
         )}

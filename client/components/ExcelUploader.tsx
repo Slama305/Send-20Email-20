@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Upload, X, CheckCircle } from "lucide-react";
 
 interface Recipient {
+  [key: string]: any; // كل الأعمدة ممكن تتحط هنا
   name: string;
   email: string;
 }
@@ -16,10 +17,7 @@ interface ExcelUploaderProps {
   onClose: () => void;
 }
 
-export default function ExcelUploader({
-  onRecipientsLoaded,
-  onClose,
-}: ExcelUploaderProps) {
+export default function ExcelUploader({ onRecipientsLoaded, onClose }: ExcelUploaderProps) {
   const [recipients, setRecipients] = useState<Recipient[]>([]);
   const [fileName, setFileName] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -33,39 +31,28 @@ export default function ExcelUploader({
         try {
           const parsed = results.data
             .map((row: any) => ({
+              ...row, // ناخد كل الأعمدة
               name: row.Name || row.name || row.NAME || "",
               email: row.Email || row.email || row.EMAIL || "",
             }))
             .filter((row: Recipient) => row.email && row.name);
 
-          if (parsed.length === 0) {
-            throw new Error(
-              'No valid rows found. Make sure your CSV has "Name" and "Email" columns.',
-            );
-          }
+          if (parsed.length === 0) throw new Error('No valid rows found. Make sure your CSV has "Name" and "Email" columns.');
 
           setRecipients(parsed);
           setFileName(file.name);
 
-          toast({
-            title: "Success",
-            description: `Loaded ${parsed.length} recipients from CSV`,
-          });
+          toast({ title: "Success", description: `Loaded ${parsed.length} recipients from CSV` });
         } catch (error) {
           toast({
             title: "Error",
-            description:
-              error instanceof Error ? error.message : "Failed to parse CSV",
+            description: error instanceof Error ? error.message : "Failed to parse CSV",
             variant: "destructive",
           });
         }
       },
       error: (error: any) => {
-        toast({
-          title: "Error",
-          description: `CSV parse error: ${error.message}`,
-          variant: "destructive",
-        });
+        toast({ title: "Error", description: `CSV parse error: ${error.message}`, variant: "destructive" });
       },
     });
   };
@@ -78,37 +65,28 @@ export default function ExcelUploader({
         const workbook = XLSX.read(data, { type: "array" });
         const worksheet = workbook.Sheets[workbook.SheetNames[0]];
 
-        if (!worksheet) {
-          throw new Error("No worksheet found");
-        }
+        if (!worksheet) throw new Error("No worksheet found");
 
         const jsonData = XLSX.utils.sheet_to_json(worksheet) as any[];
 
         const parsed = jsonData
           .map((row: any) => ({
+            ...row, // ناخد كل الأعمدة
             name: row.Name || row.name || row.NAME || "",
             email: row.Email || row.email || row.EMAIL || "",
           }))
           .filter((row: Recipient) => row.email && row.name);
 
-        if (parsed.length === 0) {
-          throw new Error(
-            'No valid rows found. Make sure your Excel has "Name" and "Email" columns.',
-          );
-        }
+        if (parsed.length === 0) throw new Error('No valid rows found. Make sure your Excel has "Name" and "Email" columns.');
 
         setRecipients(parsed);
         setFileName(file.name);
 
-        toast({
-          title: "Success",
-          description: `Loaded ${parsed.length} recipients from Excel`,
-        });
+        toast({ title: "Success", description: `Loaded ${parsed.length} recipients from Excel` });
       } catch (error) {
         toast({
           title: "Error",
-          description:
-            error instanceof Error ? error.message : "Failed to parse Excel",
+          description: error instanceof Error ? error.message : "Failed to parse Excel",
           variant: "destructive",
         });
       }
@@ -121,32 +99,16 @@ export default function ExcelUploader({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.type === "text/csv") {
-      parseCSV(file);
-    } else if (
-      file.type ===
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    ) {
-      parseExcel(file);
-    } else {
-      toast({
-        title: "Error",
-        description: "Please upload a CSV or XLSX file",
-        variant: "destructive",
-      });
-    }
+    if (file.type === "text/csv") parseCSV(file);
+    else if (file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") parseExcel(file);
+    else toast({ title: "Error", description: "Please upload a CSV or XLSX file", variant: "destructive" });
   };
 
   const handleContinue = () => {
     if (recipients.length === 0) {
-      toast({
-        title: "Error",
-        description: "Please upload and load a file first",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Please upload and load a file first", variant: "destructive" });
       return;
     }
-
     onRecipientsLoaded(recipients);
     onClose();
   };
@@ -154,117 +116,37 @@ export default function ExcelUploader({
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <Card className="w-full max-w-md p-6">
-        {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-gray-900">Upload Recipients</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
-          >
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
             <X className="w-6 h-6" />
           </button>
         </div>
-
         <div className="space-y-4">
-          {/* Upload Area */}
           {recipients.length === 0 ? (
             <>
-              <div
-                className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 transition-colors cursor-pointer"
-                onClick={() => fileInputRef.current?.click()}
-              >
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 transition-colors cursor-pointer" onClick={() => fileInputRef.current?.click()}>
                 <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                <p className="text-sm font-medium text-gray-900 mb-1">
-                  Click to upload or drag and drop
-                </p>
+                <p className="text-sm font-medium text-gray-900 mb-1">Click to upload or drag and drop</p>
                 <p className="text-xs text-gray-500">CSV or XLSX file</p>
               </div>
-
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".csv,.xlsx"
-                onChange={handleFileSelect}
-                className="hidden"
-              />
-
-              {/* Format Info */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-xs font-semibold text-blue-900 mb-2">
-                  Expected Format:
-                </p>
-                <div className="text-xs text-blue-900 font-mono space-y-1">
-                  <p>Name | Email</p>
-                  <p>------|----------</p>
-                  <p>John | john@example.com</p>
-                  <p>Jane | jane@example.com</p>
-                </div>
-              </div>
+              <input ref={fileInputRef} type="file" accept=".csv,.xlsx" onChange={handleFileSelect} className="hidden" />
             </>
           ) : (
             <>
-              {/* Loaded Recipients */}
               <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex gap-3">
                 <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm font-semibold text-green-900">
-                    {fileName}
-                  </p>
-                  <p className="text-xs text-green-800">
-                    {recipients.length} recipient
-                    {recipients.length !== 1 ? "s" : ""} loaded
-                  </p>
+                  <p className="text-sm font-semibold text-green-900">{fileName}</p>
+                  <p className="text-xs text-green-800">{recipients.length} recipient{recipients.length !== 1 ? "s" : ""} loaded</p>
                 </div>
               </div>
-
-              {/* Recipients Preview */}
-              <div className="bg-gray-50 rounded-lg border border-gray-200 max-h-48 overflow-y-auto">
-                <div className="text-xs font-semibold text-gray-700 p-3 bg-gray-100 border-b border-gray-200 sticky top-0">
-                  Recipients Preview
-                </div>
-                <div className="divide-y divide-gray-200">
-                  {recipients.slice(0, 10).map((r, i) => (
-                    <div key={i} className="p-3">
-                      <p className="text-sm font-medium text-gray-900">
-                        {r.name}
-                      </p>
-                      <p className="text-xs text-gray-500">{r.email}</p>
-                    </div>
-                  ))}
-                </div>
-                {recipients.length > 10 && (
-                  <div className="p-3 bg-gray-100 text-xs text-gray-600 border-t border-gray-200 text-center">
-                    +{recipients.length - 10} more
-                  </div>
-                )}
-              </div>
-
-              {/* Change File */}
-              <button
-                onClick={() => {
-                  setRecipients([]);
-                  setFileName("");
-                  fileInputRef.current?.click();
-                }}
-                className="text-sm text-blue-600 hover:text-blue-700 font-medium"
-              >
-                Change file
-              </button>
+              <button onClick={() => { setRecipients([]); setFileName(""); fileInputRef.current?.click(); }} className="text-sm text-blue-600 hover:text-blue-700 font-medium">Change file</button>
             </>
           )}
-
-          {/* Buttons */}
           <div className="flex gap-3">
-            <Button variant="outline" onClick={onClose} className="flex-1 h-10">
-              Cancel
-            </Button>
-            <Button
-              onClick={handleContinue}
-              disabled={recipients.length === 0}
-              className="flex-1 h-10 bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
-            >
-              Continue
-            </Button>
+            <Button variant="outline" onClick={onClose} className="flex-1 h-10">Cancel</Button>
+            <Button onClick={handleContinue} disabled={recipients.length === 0} className="flex-1 h-10 bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50">Continue</Button>
           </div>
         </div>
       </Card>

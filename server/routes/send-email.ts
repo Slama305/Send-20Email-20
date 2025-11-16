@@ -15,7 +15,6 @@ export const handleSendEmail: RequestHandler = async (req, res) => {
       return;
     }
 
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(payload.recipientEmail)) {
       res.status(400).json({
@@ -25,12 +24,19 @@ export const handleSendEmail: RequestHandler = async (req, res) => {
       return;
     }
 
-    // Send email
+    // Use Gmail credentials from session or request body
+    const credentialsStr =
+      req.session?.gmailCredentials || req.body?.gmailCredentials;
+    if (!credentialsStr) throw new Error("Gmail credentials not found");
+    const { email: gmailEmail, password: appPassword } = JSON.parse(credentialsStr);
+
     const result = await sendEmailWithNodemailer({
       to: payload.recipientEmail,
       recipientName: payload.recipientName,
       subject: payload.subject,
       html: payload.content,
+      gmailEmail,
+      appPassword,
     });
 
     res.json({

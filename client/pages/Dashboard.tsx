@@ -1,3 +1,4 @@
+// src/pages/Dashboard.tsx
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { EMAIL_TEMPLATES, EmailTemplate, BulkEmailRequest } from "@shared/api";
@@ -39,6 +40,12 @@ export default function Dashboard() {
   const [editedSubject, setEditedSubject] = useState(selectedTemplate.subject);
   const [editedContent, setEditedContent] = useState(selectedTemplate.content);
 
+  // Sync edited fields when template changes
+  useEffect(() => {
+    setEditedSubject(selectedTemplate.subject);
+    setEditedContent(selectedTemplate.content);
+  }, [selectedTemplate]);
+
   // Check authentication
   useEffect(() => {
     const credentials = sessionStorage.getItem("gmailCredentials");
@@ -65,10 +72,88 @@ export default function Dashboard() {
 
   const handleSelectTemplate = (template: EmailTemplate) => {
     setSelectedTemplate(template);
-    setEditedSubject(template.subject);
-    setEditedContent(template.content);
   };
 
+  // Send single email (from EmailEditor)
+  const handleSendSingle = async (recipientEmail: string, recipientName: string) => {
+    if (!recipientEmail || !recipientName) {
+      toast({
+        title: "Error",
+        description: "Please provide recipient name and email",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const credentialsStr = sessionStorage.getItem("gmailCredentials");
+    if (!credentialsStr) {
+      toast({
+        title: "Error",
+        description: "Gmail credentials not found, please log in again",
+        variant: "destructive",
+      });
+      return;
+    }
+    const credentials = JSON.parse(credentialsStr);
+
+    setIsSending(true);
+    try {
+      const payload = {
+        recipientEmail,
+        recipientName,
+        subject: editedSubject,
+        content: editedContent,
+        templateId: selectedTemplate.id,
+        gmailEmail: credentials.email,
+        appPassword: credentials.password,
+      };
+
+      const res = await fetch("/api/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to send email");
+      }
+
+      const singleResult: SendResult = {
+        email: recipientEmail,
+        name: recipientName,
+        success: true,
+      };
+      setSendResults((prev) => [...prev, singleResult]);
+      setShowProgress(true);
+
+      toast({
+        title: "Sent",
+        description: `Email sent to ${recipientName} (${recipientEmail})`,
+      });
+    } catch (error) {
+      console.error("Send single email error:", error);
+      const failResult: SendResult = {
+        email: recipientEmail,
+        name: recipientName,
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
+      setSendResults((prev) => [...prev, failResult]);
+      setShowProgress(true);
+
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to send email",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  // Send bulk emails
   const handleSendBulkEmails = async () => {
     if (recipients.length === 0) {
       toast({
@@ -79,18 +164,22 @@ export default function Dashboard() {
       return;
     }
 
+    const credentialsStr = sessionStorage.getItem("gmailCredentials");
+    if (!credentialsStr) {
+      toast({
+        title: "Error",
+        description: "Gmail credentials not found, please log in again",
+        variant: "destructive",
+      });
+      return;
+    }
+    const credentials = JSON.parse(credentialsStr);
+
     setShowProgress(true);
     setSendResults([]);
     setIsSending(true);
 
     try {
-      const credentialsStr = sessionStorage.getItem("gmailCredentials");
-      if (!credentialsStr) {
-        throw new Error("Credentials not found");
-      }
-
-      const credentials = JSON.parse(credentialsStr);
-
       const payload: BulkEmailRequest = {
         recipients,
         subject: editedSubject,
@@ -102,9 +191,7 @@ export default function Dashboard() {
 
       const response = await fetch("/api/bulk-send-email", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
@@ -114,21 +201,28 @@ export default function Dashboard() {
         throw new Error(data.message || "Failed to send emails");
       }
 
-      setSendResults(data.results);
+      if (Array.isArray(data.results)) {
+        setSendResults((prev) => [...prev, ...data.results]);
+      } else {
+        const fallbackResults: SendResult[] = recipients.map((r) => ({
+          email: r.email,
+          name: r.name,
+          success: true,
+        }));
+        setSendResults((prev) => [...prev, ...fallbackResults]);
+      }
 
       toast({
         title: "Complete",
-        description: `Sent ${data.totalSent} emails, ${data.totalFailed} failed`,
+        description: `Sent ${data.totalSent ?? recipients.length} emails, ${data.totalFailed ?? 0} failed`,
       });
     } catch (error) {
       console.error("Error sending bulk emails:", error);
       toast({
         title: "Error",
-        description:
-          error instanceof Error ? error.message : "Failed to send emails",
+        description: error instanceof Error ? error.message : "Failed to send emails",
         variant: "destructive",
       });
-      setShowProgress(false);
     } finally {
       setIsSending(false);
     }
@@ -136,6 +230,10 @@ export default function Dashboard() {
 
   const handleLogout = () => {
     sessionStorage.removeItem("gmailCredentials");
+    setRecipients([]);
+    setSendResults([]);
+    setShowProgress(false);
+    setIsSending(false);
     navigate("/");
     toast({
       title: "Logged out",
@@ -147,28 +245,20 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex justify-between items-start">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <span className="text-4xl">📧</span>
-                <h1 className="text-3xl font-bold text-slate-900">
-                  Email Templates
-                </h1>
-              </div>
-              <p className="text-slate-600">
-                Choose a template, customize it, and send to multiple recipients
-              </p>
+        <div className="max-w-7xl mx-auto px-6 py-6 flex justify-between items-start">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <span className="text-4xl">📧</span>
+              <h1 className="text-3xl font-bold text-slate-900">Email Templates</h1>
             </div>
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              className="flex gap-2"
-            >
-              <LogOut className="w-4 h-4" />
-              Logout
-            </Button>
+            <p className="text-slate-600">
+              Choose a template, customize it, and send to multiple recipients
+            </p>
           </div>
+          <Button onClick={handleLogout} variant="outline" className="flex gap-2">
+            <LogOut className="w-4 h-4" />
+            Logout
+          </Button>
         </div>
       </header>
 
@@ -178,12 +268,9 @@ export default function Dashboard() {
         {recipients.length === 0 && !showProgress && (
           <div className="mb-8 p-6 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-blue-900">
-                📤 Upload Recipients from Excel
-              </h3>
+              <h3 className="font-semibold text-blue-900">📤 Upload Recipients from Excel</h3>
               <p className="text-sm text-blue-800 mt-1">
-                Upload a CSV or XLSX file with Name and Email columns to send to
-                multiple recipients
+                Upload a CSV or XLSX file with Name and Email columns to send to multiple recipients
               </p>
             </div>
             <Button
@@ -216,14 +303,13 @@ export default function Dashboard() {
                 >
                   Send to More Recipients
                 </Button>
+
                 <Button
                   variant="outline"
-                  onClick={() => {
-                    setShowProgress(false);
-                    setSendResults([]);
-                  }}
+                  onClick={handleSendBulkEmails}
+                  disabled={isSending || recipients.length === 0}
                 >
-                  Send Same Template Again
+                  Resend Same Template
                 </Button>
               </div>
             )}
@@ -235,22 +321,15 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Left Sidebar - Template Selection */}
             <div className="lg:col-span-1 space-y-6">
-              {/* Search */}
+              <input
+                type="text"
+                placeholder="Search templates..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              />
               <div>
-                <input
-                  type="text"
-                  placeholder="Search templates..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                />
-              </div>
-
-              {/* Category Filter */}
-              <div>
-                <p className="text-sm font-semibold text-slate-700 mb-3">
-                  Categories
-                </p>
+                <p className="text-sm font-semibold text-slate-700 mb-3">Categories</p>
                 <div className="space-y-2">
                   {categories.map((category) => (
                     <button
@@ -268,7 +347,6 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Template List */}
               <div className="space-y-3">
                 <p className="text-sm font-semibold text-slate-700">
                   {filteredTemplates.length} Templates
@@ -289,20 +367,25 @@ export default function Dashboard() {
             {/* Right Content - Preview and Editor */}
             <div className="lg:col-span-3 space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Preview */}
-                <TemplatePreview template={selectedTemplate} />
-
-                {/* Editor */}
+                <TemplatePreview
+                  template={{
+                    ...selectedTemplate,
+                    subject: editedSubject,
+                    content: editedContent,
+                  }}
+                />
                 <div>
                   <EmailEditor
-                    template={selectedTemplate}
+                    template={{
+                      ...selectedTemplate,
+                      subject: editedSubject,
+                      content: editedContent,
+                    }}
                     onSubjectChange={setEditedSubject}
                     onContentChange={setEditedContent}
-                    onSend={() => {}}
-                    isSending={false}
+                    onSend={handleSendSingle}
+                    isSending={isSending}
                   />
-
-                  {/* Send to Multiple Button */}
                   {recipients.length > 0 && (
                     <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                       <p className="text-sm font-semibold text-green-900 mb-3">
@@ -332,19 +415,18 @@ export default function Dashboard() {
         )}
       </main>
 
-      {/* Footer */}
       <footer className="bg-white border-t border-slate-200 mt-12">
         <div className="max-w-7xl mx-auto px-6 py-8 text-center text-slate-600 text-sm">
-          <p>
-            Professional Email Template Manager • Powered by React & Tailwind
-          </p>
+          <p>Professional Email Template Manager • </p>
         </div>
       </footer>
 
-      {/* Excel Uploader Modal */}
       {showUploader && (
         <ExcelUploader
-          onRecipientsLoaded={(recs) => setRecipients(recs)}
+          onRecipientsLoaded={(recs) => {
+            setRecipients(recs);
+            setShowUploader(false);
+          }}
           onClose={() => setShowUploader(false)}
         />
       )}

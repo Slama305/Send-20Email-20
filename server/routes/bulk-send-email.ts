@@ -1,61 +1,45 @@
 import { RequestHandler } from "express";
 import nodemailer from "nodemailer";
-import { BulkEmailRequest, BulkEmailResponse } from "@shared/api";
+import { BulkEmailRequest, BulkEmailResponse, EMAIL_TEMPLATES } from "../../shared/api";
+import { sendEmailWithNodemailer } from "../utils/mailer";
 
 export const handleBulkSendEmail: RequestHandler = async (req, res) => {
   try {
     const payload = req.body as BulkEmailRequest;
 
-    // Validation
-    if (
-      !payload.recipients ||
-      !Array.isArray(payload.recipients) ||
-      payload.recipients.length === 0
-    ) {
-      res.status(400).json({
+    if (!payload.recipients?.length)
+      return res.status(400).json({
         success: false,
         message: "No recipients provided",
         totalSent: 0,
         totalFailed: 0,
         results: [],
       } as BulkEmailResponse);
-      return;
-    }
 
-    if (
-      !payload.subject ||
-      !payload.content ||
-      !payload.gmailEmail ||
-      !payload.appPassword
-    ) {
-      res.status(400).json({
+    if (!payload.subject || !payload.content || !payload.gmailEmail || !payload.appPassword)
+      return res.status(400).json({
         success: false,
-        message:
-          "Missing required fields: subject, content, gmailEmail, appPassword",
+        message: "Missing required fields",
         totalSent: 0,
         totalFailed: 0,
         results: [],
       } as BulkEmailResponse);
-      return;
-    }
 
-    // Create transporter with Gmail credentials
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: payload.gmailEmail,
-        pass: payload.appPassword,
-      },
-    });
+    const results: any[] = [];
+    let successCount = 0, failureCount = 0;
 
-    // Send emails to all recipients
-    const results = [];
-    let successCount = 0;
-    let failureCount = 0;
+    const template = EMAIL_TEMPLATES.find((t) => t.id === payload.templateId);
+    if (!template)
+      return res.status(400).json({
+        success: false,
+        message: "Template not found",
+        totalSent: 0,
+        totalFailed: 0,
+        results: [],
+      } as BulkEmailResponse);
 
     for (const recipient of payload.recipients) {
       try {
-        // Validate email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(recipient.email)) {
           results.push({
@@ -68,19 +52,32 @@ export const handleBulkSendEmail: RequestHandler = async (req, res) => {
           continue;
         }
 
-        // Send email
-        await transporter.sendMail({
-          from: `"${recipient.name}" <${payload.gmailEmail}>`,
-          to: `"${recipient.name}" <${recipient.email}>`,
-          subject: payload.subject,
-          html: payload.content,
+        const personalizedContent = payload.content.replace(/\[([^\]]+)\]/g, (_, key) => {
+          const normalizedKey = key.trim().toLowerCase().replace(/\s+/g, "");
+          let matchKey = Object.keys(recipient).find(
+            (k) => k.toLowerCase().replace(/\s+/g, "") === normalizedKey,
+          );
+
+          if (!matchKey) {
+            matchKey = Object.keys(recipient).find((k) => {
+              const col = k.toLowerCase().replace(/\s+/g, "");
+              return col.includes(normalizedKey) || normalizedKey.includes(col);
+            });
+          }
+
+          return matchKey ? String(recipient[matchKey as keyof typeof recipient]) : `[${key}]`;
         });
 
-        results.push({
-          email: recipient.email,
-          name: recipient.name,
-          success: true,
+        await sendEmailWithNodemailer({
+          to: recipient.email,
+          recipientName: recipient.name,
+          subject: payload.subject,
+          html: personalizedContent,
+          gmailEmail: payload.gmailEmail,
+          appPassword: payload.appPassword,
         });
+
+        results.push({ email: recipient.email, name: recipient.name, success: true });
         successCount++;
       } catch (error) {
         results.push({

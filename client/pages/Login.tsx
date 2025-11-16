@@ -26,7 +26,6 @@ export default function Login() {
       return;
     }
 
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       toast({
@@ -40,7 +39,6 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      // Store credentials in session storage (not persistent)
       sessionStorage.setItem(
         "gmailCredentials",
         JSON.stringify({ email, password }),
@@ -51,7 +49,6 @@ export default function Login() {
         description: "Logged in successfully",
       });
 
-      // Redirect to main app
       navigate("/dashboard");
     } catch (error) {
       toast({
@@ -78,7 +75,6 @@ export default function Login() {
 
         {/* Card */}
         <Card className="p-8 shadow-lg">
-          {/* Info Alert */}
           <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg flex gap-3">
             <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
             <div className="text-sm text-blue-900">
@@ -138,11 +134,7 @@ export default function Login() {
                   className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
                   tabIndex={-1}
                 >
-                  {showPassword ? (
-                    <EyeOff className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
-                  )}
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
               <p className="text-xs text-gray-500 mt-1">
@@ -167,7 +159,6 @@ export default function Login() {
             </Button>
           </form>
 
-          {/* Footer */}
           <p className="text-xs text-gray-500 text-center mt-6">
             Your credentials are only used to send emails and are not stored on
             our servers
@@ -176,14 +167,10 @@ export default function Login() {
 
         {/* Demo Credentials */}
         <div className="mt-6 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
-          <p className="text-xs font-semibold text-gray-700 mb-2">
-            ℹ️ Need help?
-          </p>
+          <p className="text-xs font-semibold text-gray-700 mb-2">ℹ️ Need help?</p>
           <ul className="text-xs text-gray-600 space-y-1">
             <li>• Your email should be a Gmail account (example@gmail.com)</li>
-            <li>
-              • Generate an App Password from your Google Account settings
-            </li>
+            <li>• Generate an App Password from your Google Account settings</li>
             <li>• The 16-character password replaces your regular password</li>
             <li>• Your credentials are kept in browser session only</li>
           </ul>
